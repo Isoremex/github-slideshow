@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soda Can - Energy Drink</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #d4d4d0;
+    --card-bg: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-muted: #7a7a7a;
+    --accent-green: #4caf50;
+    --accent-orange: #ff6b35;
+    --accent-yellow: #ffd54f;
+    --btn-dark: #1a1a1a;
+    --btn-text: #ffffff;
+    --radius: 24px;
+    --shadow: 0 20px 60px rgba(0,0,0,0.08);
+  }
+
+  body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    overflow-x: hidden;
+  }
+
+  .main-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    max-width: 1200px;
+    width: 100%;
+    min-height: 700px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 0.6fr;
+    grid-template-rows: auto 1fr auto;
+    animation: cardIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(40px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .gradient-blob {
+    position: absolute;
+    top: -80px;
+    left: -80px;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle at 40% 40%, #a8ff78 0%, #78ffd6 30%, #ffd54f 60%, transparent 70%);
+    filter: blur(40px);
+    opacity: 0.7;
+    z-index: 0;
+    pointer-events: none;
+    animation: blobFloat 8s ease-in-out infinite;
+  }
+
+  @keyframes blobFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(15px, 10px) scale(1.05); }
+  }
+
+  nav {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    padding: 28px 40px;
+    position: relative;
+    z-index: 2;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    position: relative;
+    transition: color 0.3s;
+  }
+
+  nav a:hover { color: var(--accent-orange); }
+
+  nav a.has-badge::after {
+    content: 'New';
+    position: absolute;
+    top: -12px;
+    right: -18px;
+    background: #ff3d3d;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 8px;
+  }
+
+  .nav-right {
+    position: absolute;
+    right: 40px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .nav-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    background: transparent;
+  }
+
+  .nav-icon:hover { background: #f0f0f0; }
+
+  .nav-icon.cart {
+    background: var(--btn-dark);
+    color: white;
+  }
+
+  .nav-icon.cart:hover { background: #333; transform: scale(1.05); }
+
+  .nav-icon svg { width: 20px; height: 20px; }
+
+  .left-col {
+    padding: 10px 0 50px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .headline {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 58px;
+    line-height: 1.05;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+    animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .subtitle {
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+  }
+
+  .subtitle span { color: var(--accent-orange); font-weight: 700; }
+
+  .total-order {
+    font-size: 20px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+  }
+
+  .total-order strong {
+    color: var(--text-dark);
+    font-size: 28px;
+    font-weight: 700;
+    margin-left: 4px;
+  }
+
+  .chooser {
+    animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+    margin-bottom: 24px;
+  }
+
+  .chooser-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+  }
+
+  .qty-control {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: #f5f5f5;
+    border-radius: 16px;
+    width: fit-content;
+    overflow: hidden;
+  }
+
+  .qty-btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: var(--btn-dark);
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .qty-btn:hover { background: #333; }
+  .qty-btn:active { transform: scale(0.92); }
+
+  .qty-display {
+    width: 50px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+    user-select: none;
+  }
+
+  .buy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--btn-dark);
+    color: var(--btn-text);
+    border: none;
+    border-radius: 60px;
+    padding: 16px 36px 16px 18px;
+    font-size: 17px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    width: fit-content;
+    animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both;
+  }
+
+  .buy-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+  .buy-btn:active { transform: translateY(0) scale(0.97); }
+
+  .buy-icon {
+    width: 42px;
+    height: 42px;
+    background: var(--accent-yellow);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .buy-icon svg { width: 18px; height: 18px; fill: var(--text-dark); }
+
+  .center-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+  }
+
+  .product-circle {
+    width: 420px;
+    height: 420px;
+    background: linear-gradient(145deg, #e8e8e8 0%, #c8c8cc 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+  }
+
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .can-group {
+    position: relative;
+    width: 320px;
+    height: 360px;
+  }
+
+  .can {
+    position: absolute;
+    width: 140px;
+    height: 260px;
+    border-radius: 14px 14px 8px 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .can:hover { transform: translateY(-8px) rotate(0deg) !important; }
+
+  .can-gold {
+    left: 20px;
+    top: 20px;
+    transform: rotate(-8deg);
+    background: linear-gradient(160deg, #f0c040 0%, #e89820 40%, #d4790a 70%, #f0b020 100%);
+    z-index: 2;
+  }
+
+  .can-blue {
+    right: 20px;
+    top: 40px;
+    transform: rotate(5deg);
+    background: linear-gradient(160deg, #4a5a8a 0%, #2a3a6a 40%, #1a2a5a 70%, #3a4a7a 100%);
+    z-index: 1;
+  }
+
+  .can-top {
+    width: 80px;
+    height: 20px;
+    background: linear-gradient(to bottom, #bbb 0%, #999 100%);
+    border-radius: 6px 6px 0 0;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .can-top::after {
+    content: '';
+    width: 40px;
+    height: 12px;
+    background: linear-gradient(to bottom, #aaa, #888);
+    border-radius: 4px;
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .can-body {
+    padding: 16px 12px;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .can-label-soda {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: white;
+    text-shadow: 1px 2px 4px rgba(0,0,0,0.3);
+    transform: rotate(-10deg);
+  }
+
+  .can-label-can {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 36px;
+    color: white;
+    text-shadow: 2px 3px 6px rgba(0,0,0,0.3);
+    line-height: 0.9;
+  }
+
+  .can-label-sub {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .can-blue .can-body::before {
+    content: '◆';
+    color: rgba(255,255,255,0.3);
+    font-size: 14px;
+    position: absolute;
+    top: 30px;
+    right: 20px;
+  }
+
+  .badge-original {
+    position: absolute;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 90px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    z-index: 5;
+    animation: floatBadge 3s ease-in-out infinite;
+  }
+
+  @keyframes floatBadge {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-6px); }
+  }
+
+  .badge-original .pct {
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--accent-orange);
+  }
+
+  .badge-original .txt {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-dark);
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  .chip {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    border-radius: 16px;
+    padding: 10px 18px 10px 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    z-index: 5;
+    animation: chipIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .chip-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .chip-text h4 { font-size: 13px; font-weight: 700; color: var(--text-dark); }
+  .chip-text p { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+  .chip-best {
+    right: -40px;
+    top: 50%;
+    animation-delay: 0.6s;
+  }
+
+  .chip-best .chip-icon { background: linear-gradient(135deg, #a8edea, #78d5d7); }
+
+  .chip-classic {
+    left: -20px;
+    bottom: 40px;
+    animation-delay: 0.8s;
+  }
+
+  .chip-classic .chip-icon { background: linear-gradient(135deg, #f6d365, #fda085); }
+
+  @keyframes chipIn {
+    from { opacity: 0; transform: translateY(15px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .right-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px 30px;
+    z-index: 2;
+  }
+
+  .thumb-card {
+    width: 120px;
+    height: 130px;
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .thumb-card:nth-child(1) { animation-delay: 0.5s; }
+  .thumb-card:nth-child(2) { animation-delay: 0.65s; }
+  .thumb-card:nth-child(3) { animation-delay: 0.8s; }
+
+  .thumb-card:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+
+  .thumb-card .thumb-bg {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .thumb-card:nth-child(1) .thumb-bg { background: linear-gradient(135deg, #e8f0fe, #c5d5f0); }
+  .thumb-card:nth-child(2) .thumb-bg { background: linear-gradient(135deg, #f0e8fe, #d5c5f0); }
+  .thumb-card:nth-child(3) .thumb-bg { background: linear-gradient(135deg, #fee8f0, #f0c5d5); }
+
+  .thumb-emoji {
+    font-size: 40px;
+    margin-bottom: 4px;
+  }
+
+  .thumb-label {
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+  }
+
+  .footer-row {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px 50px 30px;
+    z-index: 2;
+  }
+
+  .giveaway-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: gap 0.3s;
+  }
+
+  .giveaway-link:hover { gap: 14px; color: var(--accent-orange); }
+
+  .giveaway-link .arrow {
+    font-size: 20px;
+    transition: transform 0.3s;
+  }
+
+  .giveaway-link:hover .arrow { transform: translateX(4px); }
+
+  @media (max-width: 900px) {
+    .main-card {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto auto auto;
+    }
+
+    nav { flex-wrap: wrap; gap: 20px; padding: 20px; }
+    .nav-right { position: static; }
+
+    .left-col { padding: 30px; text-align: center; align-items: center; }
+    .headline { font-size: 40px; }
+
+    .center-col { padding: 10px; }
+    .product-circle { width: 300px; height: 300px; }
+    .can-group { width: 240px; height: 280px; }
+    .can { width: 110px; height: 200px; }
+    .can-label-can { font-size: 26px; }
+
+    .chip-best { right: -10px; }
+    .chip-classic { left: -10px; }
+
+    .right-col { flex-direction: row; padding: 10px 20px; }
+    .thumb-card { width: 100px; height: 110px; }
+
+    .footer-row { justify-content: center; padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="main-card">
+  <div class="gradient-blob"></div>
+
+  <nav>
+    <a href="#">Home</a>
+    <a href="#" class="has-badge">Product</a>
+    <a href="#">About</a>
+    <a href="#">Support</a>
+    <div class="nav-right">
+      <button class="nav-icon" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="nav-icon cart" aria-label="Cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="left-col">
+    <h1 class="headline">Always<br>Be Your<br>Self</h1>
+    <p class="subtitle">Energy <span>Drink</span></p>
+    <p class="total-order">Total order : <strong id="totalPrice">$12.00</strong></p>
+
+    <div class="chooser">
+      <div class="chooser-label">Choose Your</div>
+      <div class="qty-control">
+        <button class="qty-btn" id="qtyDown" aria-label="Decrease">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2.5"><path d="M3 7h8"/></svg>
+        </button>
+        <span class="qty-display" id="qtyValue">2</span>
+        <button class="qty-btn" id="qtyUp" aria-label="Increase">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2.5"><path d="M7 3v8M3 7h8"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <button class="buy-btn" id="buyBtn">
+      <span class="buy-icon">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z M3 6h18 M16 10a4 4 0 01-8 0"/></svg>
+      </span>
+      Buy Now
+    </button>
+  </div>
+
+  <div class="center-col">
+    <div class="product-circle">
+      <div class="can-group">
+        <div class="can can-gold">
+          <div class="can-top"></div>
+          <div class="can-body">
+            <div class="can-label-soda">Soda</div>
+            <div class="can-label-can">Can</div>
+            <div class="can-label-sub">mockup</div>
+          </div>
+        </div>
+        <div class="can can-blue">
+          <div class="can-top"></div>
+          <div class="can-body">
+            <div class="can-label-soda">Soda</div>
+            <div class="can-label-can">Can</div>
+            <div class="can-label-sub">mockup</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="badge-original">
+        <span class="pct">100%</span>
+        <span class="txt">Original<br>Product</span>
+      </div>
+
+      <div class="chip chip-best">
+        <div class="chip-icon">🥤</div>
+        <div class="chip-text">
+          <h4>Best Drinks</h4>
+          <p>The things you can order</p>
+        </div>
+      </div>
+
+      <div class="chip chip-classic">
+        <div class="chip-icon">🍊</div>
+        <div class="chip-text">
+          <h4>Classic Drinks</h4>
+          <p>For traditionalists who like</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-col">
+    <div class="thumb-card">
+      <div class="thumb-bg">
+        <div class="thumb-emoji">🧊</div>
+        <div class="thumb-label">Lorem Ipsum</div>
+      </div>
+    </div>
+    <div class="thumb-card">
+      <div class="thumb-bg">
+        <div class="thumb-emoji">🎨</div>
+        <div class="thumb-label">Lorem Ipsum</div>
+      </div>
+    </div>
+    <div class="thumb-card">
+      <div class="thumb-bg">
+        <div class="thumb-emoji">🚀</div>
+        <div class="thumb-label">Lorem Ipsum</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-row">
+    <a href="#" class="giveaway-link">
+      Giveaway Free Sample <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script>
+  const PRICE_PER_ITEM = 6.00;
+  let qty = 2;
+
+  const qtyValue = document.getElementById('qtyValue');
+  const totalPrice = document.getElementById('totalPrice');
+  const qtyUp = document.getElementById('qtyUp');
+  const qtyDown = document.getElementById('qtyDown');
+  const buyBtn = document.getElementById('buyBtn');
+
+  function updatePrice() {
+    totalPrice.textContent = `$${(qty * PRICE_PER_ITEM).toFixed(2)}`;
+    qtyValue.textContent = qty;
+  }
+
+  qtyUp.addEventListener('click', () => { qty++; updatePrice(); });
+  qtyDown.addEventListener('click', () => { if (qty > 1) { qty--; updatePrice(); } });
+
+  buyBtn.addEventListener('click', () => {
+    buyBtn.style.transform = 'scale(0.95)';
+    buyBtn.textContent = '✓ Added to Cart!';
+    buyBtn.style.background = '#2e7d32';
+    setTimeout(() => {
+      buyBtn.innerHTML = `<span class="buy-icon"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z M3 6h18 M16 10a4 4 0 01-8 0"/></svg></span> Buy Now`;
+      buyBtn.style.background = '';
+      buyBtn.style.transform = '';
+    }, 1500);
+  });
+</script>
+
+</body>
+</html>
